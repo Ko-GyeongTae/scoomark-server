@@ -1,10 +1,21 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { HttpLoggerMiddleware } from 'middleware/http.middleware';
+import { AccountModule } from './account/account.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { PlaceModule } from './place/place.module';
+import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [],
+  imports: [
+    AccountModule, 
+    PlaceModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [PrismaService],
 })
-export class AppModule {}
+
+export class AppModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(HttpLoggerMiddleware).forRoutes("*");
+  }
+}

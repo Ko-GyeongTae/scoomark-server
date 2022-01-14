@@ -1,0 +1,4 @@
+model BookMark {
+    id          String      @id @default(uuid())
+    createdAt   DateTime    @default(now())
+}

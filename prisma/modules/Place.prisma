@@ -1,0 +1,24 @@
+model Place {
+    id          String  @id @default(uuid())
+    place       String 
+    way         String
+    content     String
+    url         Asset[]
+    comment     Comment[]
+    point       Int
+    latitude    String
+    longtitude  String
+    createdAt   DateTime 
+}
+
+model Asset {
+    id      String  @id @default(uuid())
+    place   Place   @relation(fields: [placeId], references: [id])
+    placeId String
+}
+
+model Comment {
+    id      String  @id @default(uuid())
+    place   Place   @relation(fields: [placeId], references: [id])
+    placeId String
+}
