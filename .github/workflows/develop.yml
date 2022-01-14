@@ -26,10 +26,11 @@ jobs:
           script: |
             cd ~/Documents/scoomark-server
             git pull
+            yarn
+            yarn build
             pm2 stop scoomark
             pm2 delete scoomark
             pm2 start yarn --interpreter bash --name scoomark -- start
-            - name: Notice
 
       - name: Notice
         uses: 8398a7/action-slack@v3
