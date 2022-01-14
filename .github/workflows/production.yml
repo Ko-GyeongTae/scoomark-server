@@ -26,7 +26,7 @@ jobs:
           docker stop Scoomark-Server
           docker rm Scoomark-Server
           docker image prune -f
-          docker run -d --name Scoomark-Server -p 5010:5010 scoomark-server /bin/bash
+          docker run -d -p 5010:5010 --name Scoomark-Server scoomark-server /bin/bash
     
     - name: Notice
       uses: 8398a7/action-slack@v3
