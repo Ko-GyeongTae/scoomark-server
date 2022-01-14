@@ -8,7 +8,7 @@ on:
     branches: [ release ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,4 +26,6 @@ jobs:
           script: |
             cd ~/Documents/scoomark-server
             git pull
+            pm2 stop scoomark
+            pm2 delete scoomark
             pm2 start yarn --interpreter bash --name scoomark -- start
