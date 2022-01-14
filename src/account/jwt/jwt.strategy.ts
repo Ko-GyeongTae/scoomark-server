@@ -1,11 +1,9 @@
-import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, Req } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Cache } from 'cache-manager';
-import { PrismaService } from '../../prisma.service';
-import { request } from 'express';
+import { PrismaService } from 'src/prisma.service';
 
-type VaildatePayload = {
+type ValidatePayload = {
   id:     string;
   uid:    string;
   name:   string;
@@ -16,7 +14,7 @@ type VaildatePayload = {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private prismaService: PrismaService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -25,8 +23,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate = async () => {
-    const account = await this.cacheManager.get(request.headers.authorization.split('')[1]);
+  validate = async (payload: ValidatePayload) => {
+    const account = await this.prismaService.account.findUnique({ where: { id: payload.id } })
     if (!account) {
       throw new HttpException (
         {

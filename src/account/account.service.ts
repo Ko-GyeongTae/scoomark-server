@@ -5,6 +5,7 @@ import { SignUpDTO } from './dto/signup.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Cache } from 'cache-manager';
+import { Request } from 'express';
 
 const HASH_LENGTH = 10;
 
@@ -67,7 +68,8 @@ export class AccountService {
       )
     }
 
-    const accessToken = this.jwtService.sign({...account})
+    const { id, name, point, school } = account;
+    const accessToken = this.jwtService.sign({id, uid, name, point, school})
     await this.cacheManager.set(accessToken, account, { ttl: 86400 });
     
     return {
@@ -76,4 +78,12 @@ export class AccountService {
     }
   }
 
+  async signOut(request: Request) {
+    const token = request.headers.authorization.replace('Bearer ', '');
+    await this.cacheManager.del(token);
+    return {
+      status: HttpStatus.OK,
+      message: 'Success',
+    }
+  }
 }
