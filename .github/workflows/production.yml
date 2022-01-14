@@ -1,4 +1,4 @@
-name: Go CD
+name: Product deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -19,13 +19,14 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-          cd ~/Documents/Backend-GAuth-server
+          cd ~/Documents/scoomark-server
           git pull
-          docker build . -t go-auth-server
-          docker stop Go-Auth-Server
-          docker rm Go-Auth-Server
+          pm2 stop scoomark
+          docker build . -t scoomark-server
+          docker stop Scoomark-Server
+          docker rm Scoomark-Server
           docker image prune -f
-          docker run -d --name Go-Auth-Server -p 5010:5010 /bin/bash
+          docker run -d --name Scoomark-Server -p 5010:5010 scoomark-server /bin/bash
     
     - name: Notice
       uses: 8398a7/action-slack@v3
