@@ -1,7 +1,6 @@
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 
 import { Request, Response, NextFunction } from 'express';
-import { identifyBrowser } from 'src/utils/user-agent.util';
 
 
 @Injectable()
@@ -17,9 +16,7 @@ export class HttpLoggerMiddleware implements NestMiddleware {
       const { statusCode } = response;
 
       this.logger.log(
-        `[${method}|${ip}](${identifyBrowser(
-          userAgent,
-        )}) ${statusCode} ${decodeURI(path)} -> ${date}`,
+        `[${method}|${ip}] ${statusCode} ${decodeURI(path)} -> ${date}`,
       );
     });
 
