@@ -1,9 +1,9 @@
 model Account {
     id          String  @id @default(uuid())
-    uid         String
+    uid         String  @unique
     name        String
     password    String
-    point       Int
+    point       Int     @default(0)
     school      String
     place       Place[]
     comment     Comment[]
