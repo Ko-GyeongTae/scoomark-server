@@ -1,0 +1,29 @@
+model Account {
+    id          String  @id @default(uuid())
+    uid         String
+    name        String
+    password    String
+    point       Int
+    school      String
+    place       Place[]
+    comment     Comment[]
+    bookMark    BookMark[]
+}
+
+model Place {
+    id          String  @id @default(uuid())
+    writer      Account @relation(fields: [writerId], references: [id])
+    writerId    String
+}
+
+model Comment {
+    id          String  @id @default(uuid()) 
+    writer      Account @relation(fields: [writerId], references: [id])
+    writerId    String
+}
+
+model BookMark {
+    id          String  @id @default(uuid())
+    account     Account @relation(fields: [accountId], references: [id])
+    accountId   String
+}

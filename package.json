@@ -19,6 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prismix": "npx prismix && prisma format",
     "precompress": "rm -rf ./prisma/schema.prisma",
     "compress": "yarn precompress && prismix && npx prisma generate"
   },
