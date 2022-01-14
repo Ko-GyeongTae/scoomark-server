@@ -30,7 +30,7 @@ jobs:
             yarn build
             pm2 stop scoomark
             pm2 delete scoomark
-            pm2 start yarn --interpreter bash --name scoomark -- start
+            pm2 start yarn --name scoomark -- start
 
       - name: Notice
         uses: 8398a7/action-slack@v3
