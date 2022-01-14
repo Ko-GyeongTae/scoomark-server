@@ -5,5 +5,5 @@ export class SignInDTO {
     uid: string;
 
     @IsString()
-    pasword: string;
+    password: string;
 }

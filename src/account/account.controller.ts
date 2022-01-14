@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { SignInDTO } from './dto/signin.dto';
 import { SignUpDTO } from './dto/signup.dto';
@@ -7,12 +7,15 @@ import { SignUpDTO } from './dto/signup.dto';
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Post()
+  @Post('/signup')
   signUp(@Body() signUpDto: SignUpDTO) {
     return this.accountService.signUp(signUpDto);
   }
 
+  @Post('/signin')
+  @HttpCode(200)
   signIn(@Body() signInDto: SignInDTO) {
     return this.accountService.signIn(signInDto);
   }
+
 }

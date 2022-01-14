@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable, Req } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-
+import { Cache } from 'cache-manager';
 import { PrismaService } from '../../prisma.service';
+import { request } from 'express';
 
 type VaildatePayload = {
   id:     string;
@@ -15,16 +16,27 @@ type VaildatePayload = {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly prismaService: PrismaService
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'JWT',
+      secretOrKey: process.env.JWT_SECRET
     });
   }
 
-  validate = async ({ id }: VaildatePayload) => {
-    return await this.prismaService.account.findUnique({ where: { id } });
+  validate = async () => {
+    const account = await this.cacheManager.get(request.headers.authorization.split('')[1]);
+    if (!account) {
+      throw new HttpException (
+        {
+          status: HttpStatus.UNAUTHORIZED,
+          message: 'Invalid Token',
+        },
+        HttpStatus.UNAUTHORIZED,
+      )
+    }
+    
+    return account;
   };
 }
