@@ -24,6 +24,6 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ~/Documents/Backend-GAuth-server
+            cd ~/Documents/scoomark-server
             git pull
             pm2 start yarn --interpreter bash --name scoomark -- start
