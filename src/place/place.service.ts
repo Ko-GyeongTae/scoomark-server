@@ -71,11 +71,10 @@ export class PlaceService {
 
     place["assets"] = [];
     images.map((i) => {
-      console.log(i)
       place["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
     });
     place["bookcount"] = images.length - 1;
-    
+
     return {
       statusCode: HttpStatus.OK,
       place,
@@ -153,7 +152,7 @@ export class PlaceService {
         },
         HttpStatus.NOT_FOUND,
       )
-    } 
+    }
 
     const bookmark = await this.prismaService.bookMark.create({
       data: {
@@ -170,14 +169,14 @@ export class PlaceService {
       }
     });
 
-    return { 
+    return {
       statusCode: HttpStatus.CREATED,
       bookmark,
     }
   }
 
   async pilgrimage(id: string, user: Account, aid: string) {
-    if(!aid) {
+    if (!aid) {
       throw new HttpException(
         {
           statusCode: HttpStatus.BAD_REQUEST,
@@ -200,7 +199,7 @@ export class PlaceService {
     }
 
     _place.url = _place.url + ' ' + aid;
-    
+
     const pilgimageObj = await this.prismaService.place.update({
       data: {
         ..._place,
@@ -225,7 +224,6 @@ export class PlaceService {
 
     pilgimageObj["assets"] = [];
     images.map((i) => {
-      console.log(i)
       pilgimageObj["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
     });
     pilgimageObj["bookcount"] = images.length - 1;
