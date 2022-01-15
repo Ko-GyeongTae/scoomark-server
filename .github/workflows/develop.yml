@@ -32,6 +32,8 @@ jobs:
             pm2 delete scoomark
             pm2 start yarn --name scoomark -- start
             go build main.go
+            pm2 stop scoomark-file-server
+            pm2 delete scoomark-file-server
             pm2 start main --name scoomark-file-server
 
       - name: Notice
