@@ -11,9 +11,9 @@ import { join } from 'path';
 
 @Module({
   imports: [
-    AccountModule, 
-    PlaceModule, 
-    CommentModule, 
+    AccountModule,
+    PlaceModule,
+    CommentModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
@@ -25,6 +25,5 @@ import { join } from 'path';
 export class AppModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(HttpLoggerMiddleware).forRoutes("*");
-    console.log(join(__dirname, '..', 'public'));
   }
 }

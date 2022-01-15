@@ -41,4 +41,11 @@ export class PlaceController {
     const { user } = request;
     return this.placeService.bookMark(id, user);
   }
+
+  @Post('pilgrimage/:id')
+  pilgrimage(@Param('id') id: string, @Req() request: Request){
+    const { user } = request;
+    const { aid } = request.body;
+    return this.placeService.pilgrimage(id, user, aid);
+  }
 }
