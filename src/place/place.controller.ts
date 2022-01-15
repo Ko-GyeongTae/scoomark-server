@@ -35,4 +35,10 @@ export class PlaceController {
   remove(@Param('id') id: string) {
     return this.placeService.remove(id);
   }
+
+  @Post('bookmark/:id')
+  bookMark(@Param('id') id: string, @Req() request: Request) {
+    const { user } = request;
+    return this.placeService.bookMark(id, user);
+  }
 }

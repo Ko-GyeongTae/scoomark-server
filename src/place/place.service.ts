@@ -127,4 +127,38 @@ export class PlaceService {
       message: "Success",
     }
   }
+
+  async bookMark(id: string, user: Account) {
+    const _place = await this.prismaService.place.findUnique({ where: { id } });
+
+    if (!_place) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    } 
+
+    const bookmark = await this.prismaService.bookMark.create({
+      data: {
+        account: {
+          connect: {
+            id: user.id,
+          }
+        },
+        place: {
+          connect: {
+            id,
+          }
+        }
+      }
+    });
+
+    return { 
+      statusCode: HttpStatus.CREATED,
+      bookmark,
+    }
+  }
 }
