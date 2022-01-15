@@ -31,7 +31,8 @@ jobs:
             pm2 stop scoomark
             pm2 delete scoomark
             pm2 start yarn --name scoomark -- start
-            pm2 start ./main.sh --name scoomark-file-server
+            go build main.go
+            pm2 start main --name scoomark-file-server
 
       - name: Notice
         uses: 8398a7/action-slack@v3
