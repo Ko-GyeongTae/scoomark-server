@@ -9,6 +9,7 @@ import (
 )
 
 func LoadsFile(rw http.ResponseWriter, r *http.Request) {
+	fmt.Println("File load.." + r.Host)
 	path := mux.Vars(r)
 	http.ServeFile(rw, r, "./public/"+path["path"])
 }
