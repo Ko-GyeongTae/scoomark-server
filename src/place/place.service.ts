@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Account } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
@@ -9,7 +10,7 @@ export class PlaceService {
     private prismaService: PrismaService,
   ) { }
 
-  async create(createPlaceDto: CreatePlaceDto, user: Express.User) {
+  async create(createPlaceDto: CreatePlaceDto, user: Account) {
     const { place, way, content, aid, latitude, longtitude } = createPlaceDto;
     await this.prismaService.place.create({
       data: {
