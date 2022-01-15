@@ -1,29 +1,28 @@
+import { HttpException } from "@nestjs/common";
 import { existsSync, mkdirSync } from "fs";
 import { diskStorage } from "multer";
 import uuidRandom from "./uuidRandom";
 
 export const multerOptions = {
     fileFilter: (request, file, callback) => {
-        if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-            // 이미지 형식은 jpg, jpeg, png만 허용합니다.
+        if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {  //image 형식.
             callback(null, true);
         } else {
-            callback(new Error('지원하지 않는 이미지 형식입니다.'), false);
+            callback(new HttpException('Unsupported image format.', 400), false);
         }
     },
 
     storage: diskStorage({
         destination: (request, file, callback) => {
-            const uploadPath: string = 'public';
+            const uploadPath: string = './public';
+            //upload 경로 지정
 
             if (!existsSync(uploadPath)) {
-                // public 폴더가 존재하지 않을시, 생성합니다.
                 mkdirSync(uploadPath);
+                //경로가 없을 시 폴더 생성
             }
-
             callback(null, uploadPath);
         },
-
         filename: (request, file, callback) => {
             callback(null, uuidRandom(file));
         }
