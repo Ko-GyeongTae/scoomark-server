@@ -12,7 +12,7 @@ const HASH_LENGTH = 10;
 @Injectable()
 export class AccountService {
   constructor(
-    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    // @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private jwtService:JwtService,
     private prismaService:PrismaService,
   ) { }
@@ -70,7 +70,7 @@ export class AccountService {
 
     const { id, name, point, school } = account;
     const accessToken = this.jwtService.sign({id, uid, name, point, school})
-    await this.cacheManager.set(accessToken, account, { ttl: 86400 });
+    // await this.cacheManager.set(accessToken, account, { ttl: 86400 });
     
     return {
       statusCode: HttpStatus.OK,
@@ -80,7 +80,7 @@ export class AccountService {
 
   async signOut(request: Request) {
     const token = request.headers.authorization.replace('Bearer ', '');
-    await this.cacheManager.del(token);
+    // await this.cacheManager.del(token);
     return {
       statusCode: HttpStatus.OK,
       message: 'Success',

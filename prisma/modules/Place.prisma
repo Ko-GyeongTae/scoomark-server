@@ -1,14 +1,14 @@
 model Place {
-    id          String  @id @default(uuid())
+    id          String      @id @default(uuid())
     place       String 
     way         String
     content     String
     url         Asset[]
     comment     Comment[]
-    point       Int
+    point       Int         @default(1)
     latitude    String
     longtitude  String
-    createdAt   DateTime 
+    createdAt   DateTime    @default(now())
 }
 
 model Asset {
