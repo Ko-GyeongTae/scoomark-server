@@ -97,8 +97,16 @@ export class AccountService {
         bookMark: true,
         place: true,
       }
-    })
-    delete account.password
+    });
+    delete account.password;
+
+    const rank = await this.prismaService.$queryRawUnsafe(
+      'SELECT RANK() OVER (ORDER BY point) AS rank FROM Account WHERE (id = ?)',
+      user.id  
+    );
+
+    account["rank"] = rank[0].rank;
+
     return {
       statusCode: HttpStatus.OK,
       account,
