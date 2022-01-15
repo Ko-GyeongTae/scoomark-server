@@ -12,6 +12,19 @@ export class CommentService {
 
   async create(createCommentDto: CreateCommentDto, user: Account) {
     const { pid, content } = createCommentDto;
+
+    const _place = await this.prismaService.place.findUnique({ where: { id: pid } });
+
+    if (!_place) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+    
     const result = await this.prismaService.comment.create({
       data: {
         content,
@@ -35,6 +48,18 @@ export class CommentService {
   }
 
   async findByPid(id: string) {
+    const _place = await this.prismaService.place.findUnique({ where: { id } });
+
+    if (!_place) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+    
     const result = await this.prismaService.comment.findMany({
       where: {
         place: {
@@ -50,8 +75,20 @@ export class CommentService {
   }
 
   async update(id: string, updateCommentDto: UpdateCommentDto) {
+    const _comment = await this.prismaService.comment.findUnique({ where: { id } });
+
+    if (!_comment) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find comment",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
     const { content } = updateCommentDto
-    const comment = await this.prismaService.place.update({
+    const comment = await this.prismaService.comment.update({
       data: {
         content,
       },
@@ -77,17 +114,19 @@ export class CommentService {
   }
 
   async remove(id: string) {
-    const comment = await this.prismaService.place.delete({ where: { id } });
+    const _comment = await this.prismaService.comment.findUnique({ where: { id } });
 
-    if (!comment) {
+    if (!_comment) {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,
-          message: "Cannot find places",
+          message: "Cannot find comment",
         },
         HttpStatus.NOT_FOUND,
       )
     }
+
+    await this.prismaService.comment.delete({ where: { id } });
 
     return {
       statusCode: HttpStatus.OK,
