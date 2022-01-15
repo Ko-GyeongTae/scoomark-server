@@ -66,21 +66,16 @@ export class PlaceService {
       )
     }
 
-    const images = place.url.split('/');
+    const images = place.url.split(' ');
     delete place.url;
 
     place["assets"] = [];
     images.map((i) => {
+      console.log(i)
       place["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
     });
-    place["bookcount"] = await this.prismaService.bookMark.count({ 
-      where: { 
-        place: {
-          id,
-        }
-      }
-    })
-
+    place["bookcount"] = images.length - 1;
+    
     return {
       statusCode: HttpStatus.OK,
       place,
@@ -179,5 +174,65 @@ export class PlaceService {
       statusCode: HttpStatus.CREATED,
       bookmark,
     }
+  }
+
+  async pilgrimage(id: string, user: Account, aid: string) {
+    if(!aid) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "aid must be string",
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    const _place = await this.prismaService.place.findUnique({ where: { id } });
+
+    if (!_place) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    _place.url = _place.url + ' ' + aid;
+    
+    const pilgimageObj = await this.prismaService.place.update({
+      data: {
+        ..._place,
+      },
+      where: {
+        id: _place.id,
+      }
+    });
+
+    const { point } = await this.prismaService.account.findUnique({ where: { id: user.id } });
+    await this.prismaService.account.update({
+      data: {
+        point,
+      },
+      where: {
+        id: user.id,
+      }
+    });
+
+    const images = _place.url.split(' ');
+    delete _place.url;
+
+    pilgimageObj["assets"] = [];
+    images.map((i) => {
+      console.log(i)
+      pilgimageObj["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
+    });
+    pilgimageObj["bookcount"] = images.length - 1;
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      pilgimageObj,
+    };
   }
 }
