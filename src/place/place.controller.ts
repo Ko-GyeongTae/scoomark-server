@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/account/jwt/jwt.auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('place')
 export class PlaceController {
-  constructor(private readonly placeService: PlaceService) {}
+  constructor(private readonly placeService: PlaceService) { }
 
   @Post()
   create(@Body() createPlaceDto: CreatePlaceDto, @Req() request: Request) {
@@ -19,6 +19,11 @@ export class PlaceController {
   @Get()
   findAll() {
     return this.placeService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.placeService.findOne(id);
   }
 
   @Patch(':id')
