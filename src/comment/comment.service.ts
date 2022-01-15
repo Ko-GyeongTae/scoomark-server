@@ -1,26 +1,97 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Account } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor (
+    private prismaService: PrismaService,
+  ) { }
+
+  async create(createCommentDto: CreateCommentDto, user: Account) {
+    const { pid, content } = createCommentDto;
+    const result = await this.prismaService.comment.create({
+      data: {
+        content,
+        writer: {
+          connect: {
+            id: user.id,
+          },
+        },
+        place: {
+          connect: {
+            id: pid,
+          }
+        }
+      }
+    });
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      result,
+    }
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findByPid(id: string) {
+    const result = await this.prismaService.comment.findMany({
+      where: {
+        place: {
+          id,
+        }
+      }
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      result,
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async update(id: string, updateCommentDto: UpdateCommentDto) {
+    const { content } = updateCommentDto
+    const comment = await this.prismaService.place.update({
+      data: {
+        content,
+      },
+      where: {
+        id,
+      }
+    })
+
+    if (!comment) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Fail to update",
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
+    return { 
+      statusCode: HttpStatus.CREATED,
+      comment,
+    }
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+  async remove(id: string) {
+    const comment = await this.prismaService.place.delete({ where: { id } });
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+    if (!comment) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Success",
+    }
   }
 }
