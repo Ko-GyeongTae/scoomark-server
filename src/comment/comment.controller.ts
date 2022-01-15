@@ -16,7 +16,7 @@ export class CommentController {
 
   @Get(':id')
   findByPid(@Param('id') id: string) {
-    return this.commentService.findOne(id);
+    return this.commentService.findByPid(id);
   }
 
   @Patch(':id')
