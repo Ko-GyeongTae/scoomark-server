@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Cache } from 'cache-manager';
 import { Request } from 'express';
+import { Account } from '@prisma/client';
 
 const HASH_LENGTH = 10;
 
@@ -87,18 +88,11 @@ export class AccountService {
     }
   }
 
-  async profile(user: Express.User) {
-    const { id } = user
-    
-    const account = await this.prismaService.account.findUnique({
-      where: {
-        id
-      }
-    })
-    delete account.password
+  async profile(user: Account) {
+    delete user.password
     return {
       statusCode: HttpStatus.OK,
-      account
+      user
     }
   }
 }
