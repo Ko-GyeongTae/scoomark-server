@@ -12,7 +12,7 @@ export class PlaceService {
 
   async create(createPlaceDto: CreatePlaceDto, user: Account) {
     const { place, way, content, aid, latitude, longtitude } = createPlaceDto;
-    await this.prismaService.place.create({
+    const result = await this.prismaService.place.create({
       data: {
         place,
         way, 
@@ -30,7 +30,12 @@ export class PlaceService {
           }
         }
       }
-    })
+    });
+
+    return {
+      statusCode: 201,
+      result,
+    }
   }
 
   async findAll() {
@@ -55,7 +60,7 @@ export class PlaceService {
 
     return {
       statusCode: 200,
-      place
+      place,
     }
   }
 
@@ -88,7 +93,8 @@ export class PlaceService {
   }
 
   async remove(id: string) {
-    const place = await this.prismaService.place.findUnique({ where: { id } });
+    const place = await this.prismaService.place.delete({ where: { id } })
+    
     if (!place) {
       throw new HttpException(
         {
@@ -98,7 +104,6 @@ export class PlaceService {
         HttpStatus.NOT_FOUND,
       )
     }
-    await this.prismaService.place.delete({ where: { id } })
 
     return {
       statusCode: 200,

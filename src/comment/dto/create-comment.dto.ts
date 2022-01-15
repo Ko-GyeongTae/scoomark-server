@@ -1,1 +1,9 @@
-export class CreateCommentDto {}
+import { IsString } from "class-validator";
+
+export class CreateCommentDto {
+    @IsString()
+    content: string
+
+    @IsString()
+    pid: string
+}
