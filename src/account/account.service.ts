@@ -28,7 +28,7 @@ export class AccountService {
     if (!result) {
       throw new HttpException (
         {
-          status: HttpStatus.BAD_REQUEST,
+          statusCode: HttpStatus.BAD_REQUEST,
           message: 'Invalid request',
         },
         HttpStatus.BAD_REQUEST,
@@ -37,7 +37,7 @@ export class AccountService {
 
     return (
       {
-        status: HttpStatus.CREATED,
+        statusCode: HttpStatus.CREATED,
         message: 'Success',
       }
     )
@@ -49,7 +49,7 @@ export class AccountService {
     if(!account) {
       throw new HttpException (
         {
-          status: HttpStatus.FORBIDDEN,
+          statusCode: HttpStatus.FORBIDDEN,
           message: 'Invalid account',
         },
         HttpStatus.FORBIDDEN,
@@ -61,7 +61,7 @@ export class AccountService {
     if(!isPasswordEqual) {
       throw new HttpException (
         {
-          status: HttpStatus.FORBIDDEN,
+          statusCode: HttpStatus.FORBIDDEN,
           message: 'Invalid account',
         },
         HttpStatus.FORBIDDEN,
@@ -73,7 +73,7 @@ export class AccountService {
     await this.cacheManager.set(accessToken, account, { ttl: 86400 });
     
     return {
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       token: accessToken,
     }
   }
@@ -82,8 +82,23 @@ export class AccountService {
     const token = request.headers.authorization.replace('Bearer ', '');
     await this.cacheManager.del(token);
     return {
-      status: HttpStatus.OK,
+      statusCode: HttpStatus.OK,
       message: 'Success',
+    }
+  }
+
+  async profile(user: Express.User) {
+    const { id } = user
+    
+    const account = await this.prismaService.account.findUnique({
+      where: {
+        id
+      }
+    })
+    delete account.password
+    return {
+      statusCode: HttpStatus.OK,
+      account
     }
   }
 }

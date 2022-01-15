@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Delete, HttpCode, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Delete, HttpCode, Req, UseGuards, Get } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { SignInDTO } from './dto/signin.dto';
 import { SignUpDTO } from './dto/signup.dto';
@@ -24,5 +24,12 @@ export class AccountController {
   @Delete('/signout')
   signOut(@Req() request:Request) {
     return this.accountService.signOut(request);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  profile(@Req() request:Request) {
+    const { user } = request;
+    return this.accountService.profile(user);
   }
 }

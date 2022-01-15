@@ -1,14 +1,15 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { HttpLoggerMiddleware } from 'middleware/http.middleware';
-import { AccountModule } from './account/account.module';
 import { AppController } from './app.controller';
 import { PlaceModule } from './place/place.module';
+import { AccountModule } from './account/account.module';
 import { PrismaService } from './prisma.service';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
     AccountModule, 
-    PlaceModule
+    PlaceModule, CommentModule
   ],
   controllers: [AppController],
   providers: [PrismaService],
