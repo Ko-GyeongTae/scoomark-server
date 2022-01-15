@@ -26,10 +26,10 @@ model Place {
 	content String 
 	url Asset[] @relation(name: "AssetToPlace")
 	comment Comment[] @relation(name: "CommentToPlace")
-	point Int 
+	point Int @default(1)
 	latitude String 
 	longtitude String 
-	createdAt DateTime 
+	createdAt DateTime @default(now())
 }
 model Comment {
 	id String @id @default(uuid())
