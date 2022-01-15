@@ -71,7 +71,7 @@ export class PlaceService {
 
     place["assets"] = [];
     images.map((i) => {
-      place["assets"].push("http://122.34.166.47:5011/file/" + i);
+      place["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
     });
     place["bookcount"] = await this.prismaService.bookMark.count({ 
       where: { 
