@@ -24,17 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate = async (payload: ValidatePayload) => {
-    const account = await this.prismaService.account.findUnique({ where: { id: payload.id } })
-    if (!account) {
-      throw new HttpException (
-        {
-          status: HttpStatus.UNAUTHORIZED,
-          message: 'Invalid Token',
-        },
-        HttpStatus.UNAUTHORIZED,
-      )
-    }
-    
+    const account = await this.prismaService.account.findUnique({ 
+      where: { 
+        id: payload.id 
+      }
+    })
     return account;
   };
 }
