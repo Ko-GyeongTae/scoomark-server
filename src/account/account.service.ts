@@ -18,7 +18,19 @@ export class AccountService {
     private prismaService:PrismaService,
   ) { }
   async signUp({ password, ...signUpDto }: SignUpDTO) {
-    const hash = await bcrypt.hash(password, HASH_LENGTH)
+    const hash = await bcrypt.hash(password, HASH_LENGTH);
+    const _isExist = await this.prismaService.account.findUnique({ where: { uid: signUpDto.uid }});
+
+    if (_isExist) {
+      throw new HttpException (
+        {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'This id is alreaday exist',
+        },
+        HttpStatus.BAD_REQUEST,
+      )
+    }
+
     const result = await this.prismaService.account.create({
       data: {
         ...signUpDto,
@@ -101,8 +113,8 @@ export class AccountService {
     delete account.password;
 
     const rank = await this.prismaService.$queryRawUnsafe(
-      'SELECT RANK() OVER (ORDER BY point) AS rank FROM Account WHERE (id = ?)',
-      user.id  
+      'SELECT * FROM (SELECT name, point, RANK() OVER (ORDER BY point DESC) AS \'rank\' FROM Account) AS R WHERE (R.name = ?)',
+      user.name  
     );
 
     account["rank"] = rank[0].rank;
