@@ -41,6 +41,17 @@ export class CommentService {
       }
     });
 
+    const { point } = await this.prismaService.account.findUnique({ where: { id: user.id } })
+
+    await this.prismaService.account.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        point: point + 1,
+      },
+    });
+
     return {
       statusCode: HttpStatus.CREATED,
       result,

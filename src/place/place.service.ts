@@ -28,6 +28,17 @@ export class PlaceService {
       }
     });
 
+    const { point } = await this.prismaService.account.findUnique({ where: { id: user.id } })
+
+    await this.prismaService.account.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        point: point + 3,
+      },
+    });
+
     return {
       statusCode: HttpStatus.CREATED,
       result,
@@ -61,7 +72,15 @@ export class PlaceService {
     place["assets"] = [];
     images.map((i) => {
       place["assets"].push("http://122.34.166.47:5011/file/" + i);
+    });
+    place["bookcount"] = await this.prismaService.bookMark.count({ 
+      where: { 
+        place: {
+          id,
+        }
+      }
     })
+
     return {
       statusCode: HttpStatus.OK,
       place,
