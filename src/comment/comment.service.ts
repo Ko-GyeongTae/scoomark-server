@@ -90,7 +90,7 @@ export class CommentService {
     }
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       message: "Success",
     }
   }

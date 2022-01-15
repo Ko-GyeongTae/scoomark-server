@@ -33,7 +33,7 @@ export class PlaceService {
     });
 
     return {
-      statusCode: 201,
+      statusCode: HttpStatus.CREATED,
       result,
     }
   }
@@ -41,7 +41,7 @@ export class PlaceService {
   async findAll() {
     const places = await this.prismaService.place.findMany();
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       places,
     }
   }
@@ -59,7 +59,7 @@ export class PlaceService {
     }
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       place,
     }
   }
@@ -106,7 +106,7 @@ export class PlaceService {
     }
 
     return {
-      statusCode: 200,
+      statusCode: HttpStatus.OK,
       message: "Success",
     }
   }
