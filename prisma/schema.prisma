@@ -24,7 +24,7 @@ model Place {
 	place String 
 	way String 
 	content String 
-	url Asset[] @relation(name: "AssetToPlace")
+	url String 
 	comment Comment[] @relation(name: "CommentToPlace")
 	point Int @default(1)
 	latitude String 
@@ -44,10 +44,4 @@ model BookMark {
 	account Account @relation(name: "AccountToBookMark", fields: [accountId], references: [id])
 	accountId String 
 	createdAt DateTime @default(now())
-}
-model Asset {
-	id String @id @default(uuid())
-	url String 
-	place Place @relation(name: "AssetToPlace", fields: [placeId], references: [id])
-	placeId String 
 }

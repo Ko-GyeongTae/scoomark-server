@@ -15,7 +15,7 @@ export class PlaceService {
     const result = await this.prismaService.place.create({
       data: {
         place,
-        way, 
+        way,
         content,
         latitude,
         longtitude,
@@ -24,11 +24,7 @@ export class PlaceService {
             id: user.id,
           }
         },
-        url: {
-          connect: {
-            id: aid,
-          }
-        }
+        url: aid
       }
     });
 
@@ -48,6 +44,7 @@ export class PlaceService {
 
   async findOne(id: string) {
     const place = await this.prismaService.place.findUnique({ where: { id } });
+
     if (!place) {
       throw new HttpException(
         {
@@ -58,6 +55,13 @@ export class PlaceService {
       )
     }
 
+    const images = place.url.split('/');
+    delete place.url;
+
+    place["assets"] = [];
+    images.map((i) => {
+      place["assets"].push("http://122.34.166.47:5011/file/" + i);
+    })
     return {
       statusCode: HttpStatus.OK,
       place,
@@ -66,6 +70,18 @@ export class PlaceService {
 
   async update(id: string, updatePlaceDto: UpdatePlaceDto) {
     const { way, content } = updatePlaceDto
+    const _place = await this.prismaService.place.findUnique({ where: { id } });
+
+    if (!_place) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Cannot find places",
+        },
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
     const place = await this.prismaService.place.update({
       data: {
         way,
@@ -86,16 +102,16 @@ export class PlaceService {
       )
     }
 
-    return { 
+    return {
       statusCode: HttpStatus.CREATED,
       place,
     }
   }
 
   async remove(id: string) {
-    const place = await this.prismaService.place.delete({ where: { id } })
-    
-    if (!place) {
+    const _place = await this.prismaService.place.findUnique({ where: { id } });
+
+    if (!_place) {
       throw new HttpException(
         {
           statusCode: HttpStatus.NOT_FOUND,
@@ -104,6 +120,7 @@ export class PlaceService {
         HttpStatus.NOT_FOUND,
       )
     }
+    await this.prismaService.place.delete({ where: { id } })
 
     return {
       statusCode: HttpStatus.OK,

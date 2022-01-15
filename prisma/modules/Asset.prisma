@@ -1,4 +1,0 @@
-model Asset {
-    id      String  @id @default(uuid())
-    url     String
-}
