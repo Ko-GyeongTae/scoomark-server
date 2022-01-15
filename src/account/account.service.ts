@@ -80,7 +80,7 @@ export class AccountService {
   }
 
   async signOut(request: Request) {
-    const token = request.headers.authorization.replace('Bearer ', '');
+    // const token = request.headers.authorization.replace('Bearer ', '');
     // await this.cacheManager.del(token);
     return {
       statusCode: HttpStatus.OK,
@@ -89,10 +89,19 @@ export class AccountService {
   }
 
   async profile(user: Account) {
-    delete user.password
+    const account = await this.prismaService.account.findUnique({ 
+      where: { 
+        id: user.id,
+      },
+      include: {
+        bookMark: true,
+        place: true,
+      }
+    })
+    delete account.password
     return {
       statusCode: HttpStatus.OK,
-      user
+      account,
     }
   }
 }

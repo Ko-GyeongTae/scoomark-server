@@ -21,6 +21,8 @@ model Place {
 	id String @id @default(uuid())
 	writer Account @relation(name: "AccountToPlace", fields: [writerId], references: [id])
 	writerId String 
+	bookMark BookMark? @relation(name: "BookMarkToPlace", fields: [bookMarkId], references: [id])
+	bookMarkId String? 
 	place String 
 	way String 
 	content String 
@@ -43,5 +45,6 @@ model BookMark {
 	id String @id @default(uuid())
 	account Account @relation(name: "AccountToBookMark", fields: [accountId], references: [id])
 	accountId String 
+	place Place? @relation(name: "BookMarkToPlace")
 	createdAt DateTime @default(now())
 }

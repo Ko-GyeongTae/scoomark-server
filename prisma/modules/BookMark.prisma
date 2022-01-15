@@ -1,4 +1,11 @@
 model BookMark {
     id          String      @id @default(uuid())
+    place       Place?
     createdAt   DateTime    @default(now())
+}
+
+model Place {
+    id          String      @id @default(uuid())
+    bookMark    BookMark?    @relation(fields: [bookMarkId], references: [id])
+    bookMarkId  String?
 }
