@@ -6,8 +6,8 @@ model Place {
     url         String
     comment     Comment[]
     point       Int         @default(1)
-    latitude    String
-    longtitude  String
+    latitude    Float
+    longtitude  Float
     createdAt   DateTime    @default(now())
 }
 

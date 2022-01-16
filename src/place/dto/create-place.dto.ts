@@ -14,8 +14,8 @@ export class CreatePlaceDto {
     aid: string;
 
     @IsString()
-    latitude: string;
+    latitude: number;
 
     @IsString()
-    longtitude: string;
+    longtitude: number;
 }
