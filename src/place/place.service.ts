@@ -47,6 +47,18 @@ export class PlaceService {
 
   async findAll() {
     const places = await this.prismaService.place.findMany();
+    
+    places.map(p => {
+      const images = p.url.split(' ');
+      delete p.url;
+
+      p["assets"] = [];
+      images.map((i) => {
+        p["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
+      });
+      p["bookcount"] = images.length - 1;
+    });
+
     return {
       statusCode: HttpStatus.OK,
       places,
