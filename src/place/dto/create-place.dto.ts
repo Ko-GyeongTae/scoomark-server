@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class CreatePlaceDto {
     @IsString()
@@ -13,9 +13,9 @@ export class CreatePlaceDto {
     @IsString()
     aid: string;
 
-    @IsString()
+    @IsNumber()
     latitude: number;
 
-    @IsString()
+    @IsNumber()
     longtitude: number;
 }
