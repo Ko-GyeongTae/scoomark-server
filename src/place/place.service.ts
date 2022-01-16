@@ -46,17 +46,28 @@ export class PlaceService {
   }
 
   async findAll() {
-    const places = await this.prismaService.place.findMany();
-    
-    places.map(p => {
+    const places = await this.prismaService.place.findMany({
+      include: {
+        writer: true,
+      }
+    });
+
+    places.map(async (p) => {
       const images = p.url.split(' ');
       delete p.url;
+      delete p.writer.password
 
       p["assets"] = [];
-      images.map((i) => {
+      images.map(async (i) => {
         p["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
       });
-      p["bookcount"] = images.length - 1;
+      p["bookcount"] = await this.prismaService.bookMark.count({
+        where: {
+          place: {
+            id: p.id,
+          }
+        }
+      });
     });
 
     return {
@@ -66,7 +77,16 @@ export class PlaceService {
   }
 
   async findOne(id: string) {
-    const place = await this.prismaService.place.findUnique({ where: { id } });
+    const place = await this.prismaService.place.findUnique({
+      where: {
+        id
+      },
+      include: {
+        writer: true
+      }
+    });
+
+    delete place.writer.password
 
     if (!place) {
       throw new HttpException(
@@ -238,7 +258,13 @@ export class PlaceService {
     images.map((i) => {
       pilgimageObj["assets"].push("https://neon-dev.kro.kr:5012/public/" + i);
     });
-    pilgimageObj["bookcount"] = images.length - 1;
+    pilgimageObj["bookcount"] = await this.prismaService.bookMark.count({
+      where: {
+        place: {
+          id: _place.id,
+        }
+      }
+    });
 
     return {
       statusCode: HttpStatus.CREATED,
